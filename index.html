@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pieces of My Heart ♡</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap');
+
+:root {
+  --pink: #efb1c7;
+  --rose: #d980a2;
+  --dark: #80566a;
+  --pale: #fff4f8;
+  --line: #f3d5e1;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 25px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  color: var(--dark);
+  font-family: 'DM Sans', sans-serif;
+  background:
+    radial-gradient(circle at 12% 12%, #ffe0eb, transparent 30%),
+    radial-gradient(circle at 90% 85%, #f9dce7, transparent 35%),
+    #fff8fb;
+}
+
+button { font: inherit; cursor: pointer; }
+
+button:focus-visible {
+  outline: 3px solid #d980a2;
+  outline-offset: 3px;
+}
+
+.app {
+  position: relative;
+  width: min(100%, 460px);
+  min-height: 590px;
+  padding: 28px 22px;
+  background: rgba(255,255,255,.94);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  box-shadow: 0 18px 60px #b76d8a1a;
+  text-align: center;
+  overflow: hidden;
+}
+
+.ribbon {
+  font-size: 27px;
+  margin-bottom: 8px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.eyebrow {
+  display: inline-block;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 50px;
+  background: var(--pale);
+  color: #b57490;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(27px, 7vw, 35px);
+  font-weight: 500;
+  line-height: 1.25;
+  margin: 18px 0 12px;
+}
+
+h1 em { color: var(--rose); }
+
+p {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #967788;
+}
+
+.primary, .secondary {
+  width: 100%;
+  border-radius: 14px;
+  padding: 13px 16px;
+  margin-top: 12px;
+  transition: transform .2s, background .2s;
+}
+
+.primary {
+  background: var(--pink);
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 7px 18px #e7a4bd38;
+}
+
+.secondary {
+  background: #fff7fa;
+  border: 1px solid var(--line);
+  color: #a86d87;
+}
+
+button:hover { transform: translateY(-2px); }
+button:active { transform: scale(.98); }
+
+.screen { display: none; animation: appear .45s ease both; }
+.screen.active { display: block; }
+
+.instructions {
+  padding: 12px;
+  border-radius: 13px;
+  background: #fff7fa;
+  border: 1px solid #f7e2ea;
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 18px 0;
+}
+
+.board {
+  width: min(100%, 330px);
+  aspect-ratio: 1;
+  margin: 18px auto 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 6px;
+  padding: 7px;
+  border-radius: 20px;
+  background: #fbe6ee;
+  border: 1px solid #f3d2df;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  border: 1px solid #edbfd0;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #fffafd, #f8dce7);
+  color: #c97b9b;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(25px, 8vw, 43px);
+  transition: background .2s, transform .2s;
+}
+
+.tile span {
+  font-size: 10px;
+  position: absolute;
+  right: 6px;
+  bottom: 4px;
+  color: #c58aa1;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.tile.selected {
+  background: #f3b5cb;
+  border: 2px solid #cc7898;
+  transform: scale(.95);
+}
+
+.tile.correct {
+  background: #ffeaf2;
+  border-color: #e7b1c7;
+}
+
+.tile.correct span { display: none; }
+
+.status {
+  font-size: 12px;
+  min-height: 23px;
+  color: #b27791;
+}
+
+.counter {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 10px 0;
+  font-size: 11px;
+  color: #ae8195;
+}
+
+.progress {
+  height: 5px;
+  background: #f9e8ef;
+  border-radius: 9px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress div {
+  width: 0;
+  height: 100%;
+  background: #df91ad;
+  transition: width .3s;
+}
+
+.love-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 230px;
+  margin: 8px 0;
+  perspective: 900px;
+}
+
+.envelope {
+  position: relative;
+  width: 210px;
+  height: 170px;
+  margin-top: 40px;
+  border-radius: 12px;
+  background: #f2b8cd;
+  box-shadow: 0 14px 25px #d88ca529;
+  cursor: pointer;
+  border: 1px solid #e5a4bd;
+  transition: transform .4s;
+}
+
+.envelope::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #f8cddd;
+  clip-path: polygon(0 0, 50% 57%, 100% 0);
+  border-radius: 12px 12px 0 0;
+  z-index: 3;
+  transform-origin: top;
+  transition: transform .7s ease;
+}
+
+.envelope::after {
+  content: "♡";
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  font-size: 39px;
+  color: #fffafd;
+  text-shadow: 0 2px 10px #bd6c8a44;
+  transition: opacity .3s;
+}
+
+.letter {
+  position: absolute;
+  z-index: 2;
+  left: 10px;
+  right: 10px;
+  top: 12px;
+  min-height: 140px;
+  padding: 15px 9px;
+  border-radius: 8px;
+  background: #fffafd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: transform .8s ease;
+}
+
+.letter b {
+  font-family: 'Playfair Display', serif;
+  font-size: 21px;
+  font-weight: 500;
+  color: #c87998;
+}
+
+.letter small {
+  margin-top: 9px;
+  font-size: 10px;
+  color: #b68a9d;
+}
+
+.envelope.open::before {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+
+.envelope.open::after { opacity: 0; }
+
+.envelope.open .letter {
+  transform: translateY(-125px);
+  z-index: 5;
+}
+
+.letter-full {
+  text-align: left;
+  padding: 19px;
+  background: #fff7fa;
+  border: 1px solid #f3dce6;
+  border-radius: 16px;
+  margin-top: 10px;
+  animation: appear .7s ease both;
+}
+
+.letter-full p { margin: 0 0 12px; }
+.letter-full p:last-child { margin-bottom: 0; }
+
+.signature {
+  text-align: right;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #bc7593;
+  margin-top: 15px;
+}
+
+.heart-particle {
+  position: fixed;
+  top: -30px;
+  z-index: 20;
+  pointer-events: none;
+  animation: fall linear forwards;
+}
+
+.footer {
+  margin-top: 22px;
+  color: #c49cad;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-6px) rotate(3deg); }
+}
+
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(320deg); opacity: 0; }
+}
+
+@media (max-width: 380px) {
+  .app { padding: 23px 15px; min-height: 550px; }
+  .board { gap: 4px; padding: 5px; }
+}
+</style>
+</head>
+<body>
+
+<main class="app">
+
+  <section class="screen active" id="intro">
+    <div class="ribbon">୨୧ 🎀 ୨୧</div>
+    <div class="eyebrow">a little secret for you</div>
+    <h1>pieces of <em>my heart</em> ♡</h1>
+    <p>
+      ada sesuatu yang aku simpan di sini.<br>
+      but first, you have to put the pieces together.
+    </p>
+    <div class="instructions">
+      🧩 <b>how to play</b><br>
+      klik dua potongan puzzle untuk menukar posisinya.
+      susun sampai membentuk gambar love yang utuh,
+      lalu buka little surprise di akhir.
+    </div>
+    <div style="font-size:27px;margin:18px">♡ 🧸 ♡</div>
+    <button class="primary" onclick="startGame()">let's put it together ♡</button>
+    <div class="footer">MADE WITH A LITTLE LOVE</div>
+  </section>
+
+  <section class="screen" id="game">
+    <div class="ribbon">🎀</div>
+    <div class="eyebrow">level 01 · the puzzle</div>
+    <h1>put the pieces <em>together</em></h1>
+    <p>dua klik untuk menukar potongan. you got this!</p>
+
+    <div class="counter">
+      <span>moves: <b id="moves">0</b></span>
+      <span id="correctCount">pieces in place: 0/9</span>
+    </div>
+
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="board" id="board" aria-label="Puzzle love 3 kali 3"></div>
+    <div class="status" id="status" aria-live="polite">pilih satu potongan dulu ♡</div>
+
+    <button class="secondary" onclick="shufflePuzzle()">↻ shuffle again</button>
+    <button class="secondary" onclick="showScreen('intro')">back to start</button>
+  </section>
+
+  <section class="screen" id="reveal">
+    <div class="ribbon">୨୧ ♡ ୨୧</div>
+    <div class="eyebrow">you did it!</div>
+    <h1>look what you <em>put together</em></h1>
+    <p>ternyata pieces kecil pun bisa jadi sesuatu yang utuh.</p>
+
+    <div class="love-stage">
+      <button class="envelope" id="envelope" onclick="openLetter()" aria-label="Buka surat rahasia">
+        <div class="letter">
+          <b>for you, ♡</b>
+          <small>a little note inside</small>
+        </div>
+      </button>
+    </div>
+    <p id="tapHint">tap the heart to open your little letter ♡</p>
+    <button class="primary" onclick="openLetter()">open my little letter 💌</button>
+  </section>
+
+  <section class="screen" id="letterScreen">
+    <div class="ribbon">💌</div>
+    <div class="eyebrow">something i wanted to say</div>
+    <h1>a little note, <em>from me.</em></h1>
+
+    <div class="letter-full" id="letterText">
+      <p>hey, you. ♡</p>
+      <p>
+        aku mau minta maaf, ya, for the things i said or did
+        that might have hurt you. mungkin ada cara aku
+        nyampein sesuatu yang kurang tepat, atau ada hal
+        yang belum bisa aku pahamin dari sudut pandang kamu.
+      </p>
+      <p>
+        i'm not saying this just to make things okay again.
+        aku sadar kalau niat baik aja sometimes isn't enough;
+        cara kita memperlakukan dan memahami satu sama lain
+        juga matters.
+      </p>
+      <p>
+        aku masih belajar buat communicate better, buat
+        dengerin tanpa buru-buru defensif, dan buat ga selalu
+        ngeliat sesuatu dari sisi aku aja. aku ga bisa janji
+        bakal selalu perfect, but i can try to be more aware
+        of my actions.
+      </p>
+      <p>
+        kamu ga harus langsung ngerasa baik-baik aja,
+        and you don't have to pretend that nothing happened.
+        take your time. aku cuma pengen kamu tau kalau
+        perasaan kamu tetap penting dan layak didengerin.
+      </p>
+      <p>
+        thank you for the little things, for your time,
+        and for moments that might seem ordinary but
+        quietly mean a lot to me.
+      </p>
+      <p>
+        semoga kita bisa belajar dari hal-hal yang ga selalu
+        berjalan sesuai harapan, and handle them with a little
+        more patience, honesty, and understanding.
+      </p>
+      <p>
+        that's all i wanted to say. no pressure, no need
+        to find the perfect reply. i just wanted to be honest
+        with you. ♡
+      </p>
+      <div class="signature">with sincerity, me ♡</div>
+    </div>
+
+    <button class="primary" onclick="copyLetter()">copy this little letter ♡</button>
+    <button class="secondary" onclick="replay()">play again ↺</button>
+    <div class="status" id="copyStatus" aria-live="polite"></div>
+    <div class="footer">A SMALL THING, MADE WITH CARE</div>
+  </section>
+
+</main>
+
+<script>
+const board = document.getElementById('board');
+
+let tiles = [];
+let selected = null;
+let moves = 0;
+let completed = false;
+let letterOpened = false;
+
+const symbols = ['♡', '♡', '♡', '♡', '♥', '♡', '♡', '♡', '♡'];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(screen => {
+    screen.classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+}
+
+function startGame() {
+  showScreen('game');
+  shufflePuzzle();
+}
+
+function shufflePuzzle() {
+  tiles = [0,1,2,3,4,5,6,7,8];
+
+  // Fisher-Yates shuffle, ensuring the puzzle starts scrambled.
+  do {
+    for (let i = tiles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+    }
+  } while (tiles.every((value, index) => value === index));
+
+  selected = null;
+  moves = 0;
+  completed = false;
+  document.getElementById('moves').textContent = moves;
+  document.getElementById('status').textContent = 'pilih satu potongan dulu ♡';
+  renderBoard();
+}
+
+function renderBoard() {
+  board.innerHTML = '';
+
+  tiles.forEach((piece, position) => {
+    const button = document.createElement('button');
+    button.className = 'tile';
+
+    if (piece === position) button.classList.add('correct');
+    if (selected === position) button.classList.add('selected');
+
+    // Every tile is a piece of a single large heart.
+    button.textContent = symbols[piece];
+
+    const number = document.createElement('span');
+    number.textContent = piece + 1;
+    button.appendChild(number);
+
+    button.setAttribute('aria-label',
+      `Potongan ${piece + 1}, posisi ${position + 1}`);
+
+    button.addEventListener('click', () => selectTile(position));
+    board.appendChild(button);
+  });
+
+  const correct = tiles.filter((piece, pos) => piece === pos).length;
+  document.getElementById('correctCount').textContent =
+    `pieces in place: ${correct}/9`;
+  document.getElementById('progressBar').style.width =
+    `${(correct / 9) * 100}%`;
+}
+
+function selectTile(position) {
+  if (completed) return;
+
+  if (selected === null) {
+    selected = position;
+    document.getElementById('status').textContent =
+      'good! sekarang pilih potongan kedua ♡';
+    renderBoard();
+    return;
+  }
+
+  if (selected === position) {
+    selected = null;
+    document.getElementById('status').textContent =
+      'pilih potongan yang mau kamu pindahkan ♡';
+    renderBoard();
+    return;
+  }
+
+  [tiles[selected], tiles[position]] = [tiles[position], tiles[selected]];
+  selected = null;
+  moves++;
+  document.getElementById('moves').textContent = moves;
+  renderBoard();
+
+  if (tiles.every((piece, pos) => piece === pos)) {
+    completed = true;
+    document.getElementById('status').textContent =
+      'you put every piece in place! ♡';
+    setTimeout(() => {
+      showScreen('reveal');
+      makeHearts(24);
+    }, 800);
+  } else {
+    document.getElementById('status').textContent =
+      'keep going, you are getting closer ♡';
+  }
+}
+
+function openLetter() {
+  if (letterOpened) return;
+
+  letterOpened = true;
+  document.getElementById('envelope').classList.add('open');
+  document.getElementById('tapHint').textContent =
+    'a little something, just for you ♡';
+
+  makeHearts(30);
+
+  setTimeout(() => {
+    showScreen('letterScreen');
+  }, 1000);
+}
+
+function makeHearts(amount) {
+  const items = ['♡', '♥', '✧', '୨୧'];
+
+  for (let i = 0; i < amount; i++) {
+    const heart = document.createElement('span');
+    heart.className = 'heart-particle';
+    heart.textContent = items[Math.floor(Math.random() * items.length)];
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = (14 + Math.random() * 20) + 'px';
+    heart.style.color = ['#e9a2bc', '#d982a3', '#f0c2d3'][
+      Math.floor(Math.random() * 3)
+    ];
+    heart.style.animationDuration = (3 + Math.random() * 3) + 's';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6500);
+  }
+}
+
+async function copyLetter() {
+  const text = document.getElementById('letterText').innerText;
+  const status = document.getElementById('copyStatus');
+
+  try {
+    await navigator.clipboard.writeText(text);
+    status.textContent = 'letter copied successfully ♡';
+  } catch (error) {
+    const area = document.createElement('textarea');
+    area.value = text;
+    document.body.appendChild(area);
+    area.select();
+
+    const success = document.execCommand('copy');
+    area.remove();
+    status.textContent = success
+      ? 'letter copied successfully ♡'
+      : 'copy failed, please select and copy the letter manually.';
+  }
+}
+
+function replay() {
+  selected = null;
+  moves = 0;
+  completed = false;
+  letterOpened = false;
+  document.getElementById('envelope').classList.remove('open');
+  document.getElementById('tapHint').textContent =
+    'tap the heart to open your little letter ♡';
+  document.getElementById('copyStatus').textContent = '';
+  showScreen('intro');
+}
+</script>
+
+</body>
+</html>
